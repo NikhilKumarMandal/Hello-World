@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from "express";
 import logger from "./config/logger";
 import { HttpError } from "http-errors";
 import authRouter from "../src/routes/auth";
+import "reflect-metadata";
 
 const app = express();
 

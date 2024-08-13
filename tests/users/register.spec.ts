@@ -38,6 +38,21 @@ describe("POST /auth/register", () => {
         (response.header as Record<string, string>)["content-type"]
       ).toEqual(expect.stringContaining("json"));
     });
+
+    it("should presist the user in the database", async () => {
+      // Arrange
+      const userData = {
+        firstName: "Nikhil",
+        lastName: "kumar",
+        email: "nikhilkumar@gmail.com",
+        password: "strick",
+      };
+
+      //Act
+      const response = await request(app).post("/auth/register").send(userData);
+
+      // Assert
+    });
   });
-  describe("Sad path", () => {});
+  describe("Fields are missing", () => {});
 });
