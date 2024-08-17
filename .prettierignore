@@ -5,3 +5,7 @@
 *.env
 .env
 .env.*
+
+tsconfig.json
+package.json
+package-lock.json
