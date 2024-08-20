@@ -1,3 +1,4 @@
+import { isJwt } from "../utils/index";
 import request from "supertest";
 import app from "../../src/app";
 import { User } from "../../src/entity/User";
@@ -149,6 +150,47 @@ describe("POST /auth/register", () => {
       // Assert
       expect(response.statusCode).toBe(400);
       expect(user).toHaveLength(1);
+    });
+
+    it("should return the access token and refresh token inside a cookie", async () => {
+      // Arrange
+      const userData = {
+        firstName: "Nikhil",
+        lastName: "kumar",
+        email: "nikhilkumar@gmail.com",
+        password: "password",
+      };
+
+      //Act
+      const response = await request(app).post("/auth/register").send(userData);
+
+      // Assert
+
+      interface Headers {
+        ["set-cookie"]: string[];
+      }
+
+      let accessToken: string | null = null;
+      let refreshToken: string | null = null;
+
+      const cookies =
+        (response.headers as unknown as Headers)["set-cookie"] || [];
+
+      cookies.forEach((cookie) => {
+        if (cookie.startsWith("accessToken=")) {
+          accessToken = cookie.split(";")[0].split("=")[1];
+        }
+
+        if (cookie.startsWith("refreshToken=")) {
+          refreshToken = cookie.split(";")[0].split("=")[1];
+        }
+      });
+
+      expect(accessToken).not.toBeNull();
+      expect(refreshToken).not.toBeNull();
+
+      expect(isJwt(accessToken)).toBeTruthy();
+      expect(isJwt(refreshToken)).toBeTruthy();
     });
   });
 

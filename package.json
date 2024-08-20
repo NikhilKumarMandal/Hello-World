@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "a backend application where user can sell food online",
   "main": "index.js",
-  "type": "commonjs",
   "scripts": {
     "dev": "cross-env NODE_ENV=dev nodemon src/server.ts",
     "format:check": "prettier . --check",
@@ -24,6 +23,7 @@
     "@types/express": "^4.17.21",
     "@types/http-errors": "^2.0.4",
     "@types/jest": "^29.5.12",
+    "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^16.11.10",
     "@types/supertest": "^6.0.2",
     "@types/winston": "^2.4.4",
@@ -54,6 +54,7 @@
     "express": "^4.19.2",
     "express-validator": "^7.2.0",
     "http-errors": "^2.0.0",
+    "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "pg": "^8.4.0",
     "reflect-metadata": "^0.1.13",
