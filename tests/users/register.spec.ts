@@ -1,3 +1,4 @@
+import { RefreshToken } from "../../src/entity/RefreshToken";
 import { isJwt } from "../utils/index";
 import request from "supertest";
 import app from "../../src/app";
@@ -191,6 +192,32 @@ describe("POST /auth/register", () => {
 
       expect(isJwt(accessToken)).toBeTruthy();
       expect(isJwt(refreshToken)).toBeTruthy();
+    });
+
+    it("Should store the refresh token in the database", async () => {
+      // Arrange
+      const userData = {
+        firstName: "Nikhil",
+        lastName: "Kumar",
+        email: "nikhilkumar@gmail.com",
+        password: "password",
+      };
+
+      // Act
+      const response = await request(app).post("/auth/register").send(userData);
+
+      // Assert
+      const refreshTokenRepo = connection.getRepository(RefreshToken);
+
+      // Query tokens by correct userId
+      const tokens = await refreshTokenRepo
+        .createQueryBuilder("refreshToken")
+        .where("refreshToken.userId = :userId", {
+          userId: response.body.userId,
+        })
+        .getMany();
+
+      expect(tokens).toHaveLength(1);
     });
   });
 

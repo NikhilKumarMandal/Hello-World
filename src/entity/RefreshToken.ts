@@ -1,30 +1,23 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-  CreateDateColumn,
 } from "typeorm";
+import { User } from "./User";
 
 @Entity()
-export class User {
+export class RefreshToken {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  firstName: string;
+  @Column({ type: "timestamp" })
+  expiresAt: Date;
 
-  @Column()
-  lastName: string;
-
-  @Column({ unique: true })
-  email: string;
-
-  @Column()
-  password: string;
-
-  @Column()
-  role: string;
+  @ManyToOne(() => User)
+  user: User;
 
   @UpdateDateColumn()
   updatedAt: number;
