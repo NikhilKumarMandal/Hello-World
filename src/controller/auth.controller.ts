@@ -1,19 +1,18 @@
+import { TokenServices } from "./../services/TokenService";
 import { UserService } from "./../services/userService";
 import { NextFunction, Response } from "express";
 import { RegisterUserRequest } from "../types";
 import { Logger } from "winston";
 import { validationResult } from "express-validator";
-import { JwtPayload, sign } from "jsonwebtoken";
-import fs from "fs";
-import path from "path";
-import { Config } from "../config";
+import { JwtPayload } from "jsonwebtoken";
 import { AppDataSource } from "../config/data-source";
 import { RefreshToken } from "../entity/RefreshToken";
 
 export class AuthController {
   constructor(
     private userService: UserService,
-    private logger: Logger
+    private logger: Logger,
+    private TokenServices: TokenServices
   ) {}
 
   async register(req: RegisterUserRequest, res: Response, next: NextFunction) {
@@ -42,19 +41,12 @@ export class AuthController {
       });
       this.logger.info("User has been registered", { id: user.id });
 
-      const privateKey = fs.readFileSync(
-        path.join(__dirname, "../../certs/private.pem")
-      );
-
       const payload: JwtPayload = {
         sub: String(user.id),
         role: user.role,
       };
-      const accessToken = sign(payload, privateKey, {
-        algorithm: "RS256",
-        expiresIn: "1h",
-        issuer: "auth-service",
-      });
+
+      const accessToken = this.TokenServices.genrateAccessToken(payload);
 
       const MS_IN_YEAR = 1000 * 60 * 60 * 24 * 365;
 
@@ -65,11 +57,9 @@ export class AuthController {
         expiresAt: new Date(Date.now() + MS_IN_YEAR),
       });
 
-      const refreshToken = sign(payload, Config.REFRESH_TOKEN_SECRET!, {
-        algorithm: "HS256",
-        expiresIn: "1y",
-        issuer: "auth-service",
-        jwtid: String(newRefreshToken.id),
+      const refreshToken = this.TokenServices.genrateRefreshToken({
+        ...payload,
+        id: String(newRefreshToken.id),
       });
 
       res.cookie("accessToken", accessToken, {
