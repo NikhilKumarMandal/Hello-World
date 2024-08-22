@@ -11,7 +11,7 @@ app.get("/", (req, res) => {
   res.send("Welcome to our application");
 });
 
-app.use("/auth", authRouter);
+app.use("/api/v1/auth", authRouter);
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
