@@ -7,7 +7,7 @@ import { DataSource } from "typeorm";
 import { AppDataSource } from "../../src/config/data-source";
 import { Roles } from "../../src/constant";
 
-describe("POST /auth/register", () => {
+describe("POST /api/v1/auth/register", () => {
   let connection: DataSource;
 
   beforeAll(async () => {
@@ -46,7 +46,9 @@ describe("POST /auth/register", () => {
       };
 
       //Act
-      const response = await request(app).post("/auth/register").send(userData);
+      const response = await request(app)
+        .post("/api/v1/auth/register")
+        .send(userData);
 
       // Assert
       expect(response.statusCode).toBe(201);
@@ -62,7 +64,9 @@ describe("POST /auth/register", () => {
       };
 
       //Act
-      const response = await request(app).post("/auth/register").send(userData);
+      const response = await request(app)
+        .post("/api/v1/auth/register")
+        .send(userData);
 
       // Assert
       expect(
@@ -80,7 +84,9 @@ describe("POST /auth/register", () => {
       };
 
       //Act
-      const response = await request(app).post("/auth/register").send(userData);
+      const response = await request(app)
+        .post("/api/v1/auth/register")
+        .send(userData);
 
       // Assert
       const userRepository = connection.getRepository(User);
@@ -101,7 +107,9 @@ describe("POST /auth/register", () => {
       };
 
       //Act
-      const response = await request(app).post("/auth/register").send(userData);
+      const response = await request(app)
+        .post("/api/v1/auth/register")
+        .send(userData);
 
       // Assert
       const userRepository = connection.getRepository(User);
@@ -120,7 +128,9 @@ describe("POST /auth/register", () => {
       };
 
       //Act
-      const response = await request(app).post("/auth/register").send(userData);
+      const response = await request(app)
+        .post("/api/v1/auth/register")
+        .send(userData);
 
       // Assert
       const userRepository = connection.getRepository(User);
@@ -144,7 +154,9 @@ describe("POST /auth/register", () => {
       await userRepository.save({ ...userData, role: Roles.CUSTOMER });
 
       //Act
-      const response = await request(app).post("/auth/register").send(userData);
+      const response = await request(app)
+        .post("/api/v1/auth/register")
+        .send(userData);
 
       const user = await userRepository.find();
 
@@ -163,7 +175,9 @@ describe("POST /auth/register", () => {
       };
 
       //Act
-      const response = await request(app).post("/auth/register").send(userData);
+      const response = await request(app)
+        .post("/api/v1/auth/register")
+        .send(userData);
 
       // Assert
 
@@ -204,7 +218,9 @@ describe("POST /auth/register", () => {
       };
 
       // Act
-      const response = await request(app).post("/auth/register").send(userData);
+      const response = await request(app)
+        .post("/api/v1/auth/register")
+        .send(userData);
 
       // Assert
       const refreshTokenRepo = connection.getRepository(RefreshToken);
@@ -232,7 +248,9 @@ describe("POST /auth/register", () => {
       };
 
       //Act
-      const response = await request(app).post("/auth/register").send(userData);
+      const response = await request(app)
+        .post("/api/v1/auth/register")
+        .send(userData);
 
       // Assert
       expect(response.statusCode).toBe(400);
@@ -251,7 +269,9 @@ describe("POST /auth/register", () => {
       };
 
       //Act
-      const response = await request(app).post("/auth/register").send(userData);
+      const response = await request(app)
+        .post("/api/v1/auth/register")
+        .send(userData);
 
       // Assert
       expect(response.statusCode).toBe(400);
@@ -270,7 +290,9 @@ describe("POST /auth/register", () => {
       };
 
       //Act
-      const response = await request(app).post("/auth/register").send(userData);
+      const response = await request(app)
+        .post("/api/v1/auth/register")
+        .send(userData);
 
       // Assert
       expect(response.statusCode).toBe(400);
@@ -289,7 +311,9 @@ describe("POST /auth/register", () => {
       };
 
       //Act
-      const response = await request(app).post("/auth/register").send(userData);
+      const response = await request(app)
+        .post("/api/v1/auth/register")
+        .send(userData);
 
       // Assert
       expect(response.statusCode).toBe(400);
@@ -310,7 +334,9 @@ describe("POST /auth/register", () => {
       };
 
       //Act
-      const response = await request(app).post("/auth/register").send(userData);
+      const response = await request(app)
+        .post("/api/v1/auth/register")
+        .send(userData);
 
       // Assert
       const userRepository = connection.getRepository(User);
@@ -328,7 +354,9 @@ describe("POST /auth/register", () => {
       };
 
       //Act
-      const response = await request(app).post("/auth/register").send(userData);
+      const response = await request(app)
+        .post("/api/v1/auth/register")
+        .send(userData);
 
       // Assert
       console.log(response.body);
@@ -347,7 +375,9 @@ describe("POST /auth/register", () => {
       };
 
       //Act
-      const response = await request(app).post("/auth/register").send(userData);
+      const response = await request(app)
+        .post("/api/v1/auth/register")
+        .send(userData);
 
       // Assert
       const userRepository = connection.getRepository(User);
