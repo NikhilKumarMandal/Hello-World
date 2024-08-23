@@ -103,5 +103,25 @@ describe("POST /api/v1/auth/self", () => {
         "password"
       );
     });
+
+    it("should return 401 status code if token does not exits", async () => {
+      // Arrange
+      const userData = {
+        firstName: "Nikhil",
+        lastName: "kumar",
+        email: "nikhilkumar@gmail.com",
+        password: "password",
+      };
+
+      const userRepository = connection.getRepository(User);
+      const data = await userRepository.save({
+        ...userData,
+        role: Roles.CUSTOMER,
+      });
+
+      const response = await request(app).get("/api/v1/auth/self").send();
+
+      expect(response.statusCode).toBe(401);
+    });
   });
 });
