@@ -201,9 +201,6 @@ describe("POST /api/v1/auth/register", () => {
         }
       });
 
-      expect(accessToken).not.toBeNull();
-      expect(refreshToken).not.toBeNull();
-
       expect(isJwt(accessToken)).toBeTruthy();
       expect(isJwt(refreshToken)).toBeTruthy();
     });

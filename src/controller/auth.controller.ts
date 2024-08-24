@@ -1,4 +1,4 @@
-import { TokenServices } from "./../services/TokenService";
+import { TokenService } from "./../services/TokenService";
 import { UserService } from "./../services/userService";
 import { NextFunction, Response } from "express";
 import { AuthRequest, RegisterUserRequest } from "../types";
@@ -12,7 +12,7 @@ export class AuthController {
   constructor(
     private userService: UserService,
     private logger: Logger,
-    private TokenServices: TokenServices,
+    private tokenServices: TokenService,
     private credentialService: CredentialService
   ) {}
 
@@ -47,12 +47,12 @@ export class AuthController {
         role: user.role,
       };
 
-      const accessToken = this.TokenServices.genrateAccessToken(payload);
+      const accessToken = this.tokenServices.generateAccessToken(payload);
 
       const newRefreshToken =
-        await this.TokenServices.presistRefreshToken(user);
+        await this.tokenServices.persistRefreshToken(user);
 
-      const refreshToken = this.TokenServices.genrateRefreshToken({
+      const refreshToken = this.tokenServices.generateRefreshToken({
         ...payload,
         id: String(newRefreshToken.id),
       });
@@ -130,12 +130,12 @@ export class AuthController {
         role: user.role,
       };
 
-      const accessToken = this.TokenServices.genrateAccessToken(payload);
+      const accessToken = this.tokenServices.generateAccessToken(payload);
 
       const newRefreshToken =
-        await this.TokenServices.presistRefreshToken(user);
+        await this.tokenServices.persistRefreshToken(user);
 
-      const refreshToken = this.TokenServices.genrateRefreshToken({
+      const refreshToken = this.tokenServices.generateRefreshToken({
         ...payload,
         id: String(newRefreshToken.id),
       });
@@ -167,5 +167,63 @@ export class AuthController {
     console.log("Auth", req.auth);
     const user = await this.userService.findById(Number(req.auth.sub));
     res.json({ ...user, password: undefined });
+  }
+
+  async refresh(req: AuthRequest, res: Response, next: NextFunction) {
+    console.log(req.auth);
+
+    try {
+      const payload: JwtPayload = {
+        sub: req.auth.sub,
+        role: req.auth.role,
+      };
+
+      const accessToken = this.tokenServices.generateAccessToken(payload);
+
+      const user = await this.userService.findById(Number(req.auth.sub));
+
+      if (!user) {
+        const error = createHttpError(
+          400,
+          "User with the token could not find"
+        );
+        next(error);
+        return;
+      }
+
+      const newRefreshToken =
+        await this.tokenServices.persistRefreshToken(user);
+
+      await this.tokenServices.deleteRefreshToken(Number(req.auth.id));
+
+      const refreshToken = this.tokenServices.generateRefreshToken({
+        ...payload,
+        id: String(newRefreshToken.id),
+      });
+
+      res.cookie("accessToken", accessToken, {
+        domain: "localhost",
+        sameSite: "strict",
+        maxAge: 1000 * 60 * 60,
+        httpOnly: true,
+      });
+
+      res.cookie("refreshToken", refreshToken, {
+        domain: "localhost",
+        sameSite: "strict",
+        maxAge: 1000 * 60 * 60 * 24 * 365,
+        httpOnly: true,
+      });
+
+      res
+        .status(200)
+        .json({
+          message: "Successfully create access Token using refresh token",
+          userId: user.id,
+        });
+    } catch (error) {
+      next(error);
+      return;
+    }
   }
 }
