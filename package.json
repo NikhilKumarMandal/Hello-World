@@ -11,7 +11,10 @@
     "lint:fix": "eslint . --fix",
     "prepare": "husky install",
     "test": "jest --watch --runInBand",
-    "start": "ts-node src/index.ts"
+    "start": "ts-node src/index.ts",
+    "migration:generate": "typeorm-ts-node-commonjs migration:generate",
+    "migration:run": "typeorm-ts-node-commonjs migration:run",
+    "migration:create": "typeorm-ts-node-commonjs migration:create"
   },
   "keywords": [
     "backend"
