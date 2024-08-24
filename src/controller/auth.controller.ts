@@ -215,12 +215,27 @@ export class AuthController {
         httpOnly: true,
       });
 
-      res
-        .status(200)
-        .json({
-          message: "Successfully create access Token using refresh token",
-          userId: user.id,
-        });
+      res.status(200).json({
+        message: "Successfully create access Token using refresh token",
+        userId: user.id,
+      });
+    } catch (error) {
+      next(error);
+      return;
+    }
+  }
+
+  async logout(req: AuthRequest, res: Response, next: NextFunction) {
+    try {
+      await this.tokenServices.deleteRefreshToken(Number(req.auth.id));
+
+      this.logger.info("Refresh Token has been deleted", { id: req.auth.id });
+      this.logger.info("User has been logged out ", { id: req.auth.sub });
+
+      res.clearCookie("accessToken");
+      res.clearCookie("refreshToken");
+
+      res.status(200).json({});
     } catch (error) {
       next(error);
       return;
