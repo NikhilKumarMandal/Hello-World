@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { NextFunction, Request, Response, Router } from "express";
 import { TenantController } from "../controller/tenant.controller";
 import { TenantService } from "../services/TenantService";
 import { AppDataSource } from "../config/data-source";
@@ -7,6 +7,7 @@ import logger from "../config/logger";
 import authenticate from "../middlewares/authenticate";
 import { canAccess } from "../middlewares/canAccess";
 import { Roles } from "../constant";
+import createTenantValidators from "../validators/createTenantValidators";
 
 const tenantRepository = AppDataSource.getRepository(Tenant);
 
@@ -15,7 +16,22 @@ const tenantController = new TenantController(tenantService, logger);
 
 const router = Router();
 
-router.post("/", authenticate, canAccess([Roles.ADMIN]), (req, res, next) =>
-  tenantController.create(req, res, next)
+router.post(
+  "/",
+  authenticate,
+  canAccess([Roles.ADMIN]),
+  createTenantValidators,
+  (req: Request, res: Response, next: NextFunction) =>
+    tenantController.create(req, res, next)
 );
+
+router.patch(
+  "/update/:id",
+  authenticate,
+  canAccess([Roles.ADMIN]),
+  createTenantValidators,
+  (req: Request, res: Response, next: NextFunction) =>
+    tenantController.update(req, res, next)
+);
+
 export default router;
