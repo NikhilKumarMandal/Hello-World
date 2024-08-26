@@ -33,6 +33,13 @@ export interface ITenant {
   address: string;
 }
 
+export interface IUser {
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: string;
+}
+
 export interface CreateTenantRequest extends Request {
   body: ITenant;
 }
@@ -41,6 +48,13 @@ export interface TenantQueryParams {
   q: string;
   perPage: number;
   currentPage: number;
+}
+
+export interface UserQueryParams {
+  perPage: number;
+  currentPage: number;
+  q: string;
+  role: string;
 }
 
 export interface CreateUserRequest extends Request {

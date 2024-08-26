@@ -8,7 +8,7 @@ import authenticate from "../middlewares/authenticate";
 import { canAccess } from "../middlewares/canAccess";
 import { Roles } from "../constant";
 import createTenantValidators from "../validators/createTenantValidators";
-import listUserValidators from "../validators/listUserValidators";
+import listTenantValidators from "../validators/listTenantValidators";
 
 const tenantRepository = AppDataSource.getRepository(Tenant);
 
@@ -37,7 +37,7 @@ router.patch(
 
 router.get(
   "/",
-  listUserValidators,
+  listTenantValidators,
   (req: Request, res: Response, next: NextFunction) =>
     tenantController.getAllTenant(req, res, next)
 );

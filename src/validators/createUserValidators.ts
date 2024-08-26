@@ -16,21 +16,9 @@ export default checkSchema({
     errorMessage: "LastName is requried!",
     notEmpty: true,
   },
-  password: {
-    trim: true,
-    notEmpty: true,
-    isLength: {
-      options: {
-        min: 8,
-      },
-      errorMessage: "Password should be at least 8 chars",
-    },
-  },
   role: {
     errorMessage: "Role is required!",
     notEmpty: true,
     trim: true,
   },
 });
-
-// export default [body("email").notEmpty().withMessage("Email is requried!")]
