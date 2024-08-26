@@ -9,6 +9,7 @@ import { canAccess } from "../middlewares/canAccess";
 import { Roles } from "../constant";
 import createTenantValidators from "../validators/createTenantValidators";
 import listTenantValidators from "../validators/listTenantValidators";
+import { CreateTenantRequest } from "../types";
 
 const tenantRepository = AppDataSource.getRepository(Tenant);
 
@@ -27,11 +28,11 @@ router.post(
 );
 
 router.patch(
-  "/update/:id",
+  "/:id",
   authenticate,
   canAccess([Roles.ADMIN]),
   createTenantValidators,
-  (req: Request, res: Response, next: NextFunction) =>
+  (req: CreateTenantRequest, res: Response, next: NextFunction) =>
     tenantController.update(req, res, next)
 );
 

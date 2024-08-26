@@ -60,7 +60,7 @@ export class TenantController {
 
       this.logger.info("Tenant has been updated", { id: Number(tenantId) });
 
-      res.status(200).json({ id: Number(tenantId) });
+      res.status(200).json({ id: tenantId });
     } catch (error) {
       next(error);
       return;

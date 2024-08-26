@@ -16,9 +16,4 @@ export default checkSchema({
     errorMessage: "LastName is requried!",
     notEmpty: true,
   },
-  role: {
-    errorMessage: "Role is required!",
-    notEmpty: true,
-    trim: true,
-  },
 });

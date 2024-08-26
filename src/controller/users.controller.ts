@@ -49,21 +49,20 @@ export class UserController {
       return;
     }
 
-    const { firstName, lastName, email, role } = req.body;
+    const { firstName, lastName, role } = req.body;
 
     this.logger.debug("Request for updation", req.body);
 
     try {
-      const updatedUser = await this.userService.update(Number(userId), {
+      await this.userService.update(Number(userId), {
         firstName,
         lastName,
-        email,
         role,
       });
 
       this.logger.info("User updated successfully", { id: Number(userId) });
 
-      res.status(200).json(updatedUser);
+      res.status(200).json({ id: userId });
     } catch (error) {
       next(error);
       return;
