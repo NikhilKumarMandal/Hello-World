@@ -7,6 +7,7 @@ import { validationResult } from "express-validator";
 import { JwtPayload } from "jsonwebtoken";
 import createHttpError from "http-errors";
 import { CredentialService } from "../services/CredentialService";
+import { Roles } from "../constant";
 
 export class AuthController {
   constructor(
@@ -16,7 +17,9 @@ export class AuthController {
     private credentialService: CredentialService
   ) {}
 
+  // register controller
   async register(req: RegisterUserRequest, res: Response, next: NextFunction) {
+    // validated fields
     const result = validationResult(req);
     console.log(result);
 
@@ -31,15 +34,19 @@ export class AuthController {
       lastName,
       email,
       password: "*******",
+      role: Roles.CUSTOMER,
     });
 
     try {
+      // create user
       const user = await this.userService.create({
         firstName,
         lastName,
         email,
         password,
+        role: Roles.CUSTOMER,
       });
+
       this.logger.info("User has been registered", { id: user.id });
 
       const payload: JwtPayload = {
@@ -47,16 +54,19 @@ export class AuthController {
         role: user.role,
       };
 
+      // genrate access token
       const accessToken = this.tokenServices.generateAccessToken(payload);
 
       const newRefreshToken =
         await this.tokenServices.persistRefreshToken(user);
 
+      // genrate refresh token
       const refreshToken = this.tokenServices.generateRefreshToken({
         ...payload,
         id: String(newRefreshToken.id),
       });
 
+      // set cookies
       res.cookie("accessToken", accessToken, {
         domain: "localhost",
         sameSite: "strict",
@@ -82,9 +92,9 @@ export class AuthController {
     }
   }
 
+  // login controller
   async login(req: RegisterUserRequest, res: Response, next: NextFunction) {
     // validate all things
-
     const result = validationResult(req);
     console.log(result);
 
@@ -93,7 +103,6 @@ export class AuthController {
     }
 
     // Take data from body
-
     const { email, password } = req.body;
 
     this.logger.debug("New request to register a user", {
@@ -125,28 +134,31 @@ export class AuthController {
         next(error);
         return;
       }
+
       const payload: JwtPayload = {
         sub: String(user.id),
         role: user.role,
       };
 
+      // genrate refresh token
       const accessToken = this.tokenServices.generateAccessToken(payload);
 
       const newRefreshToken =
         await this.tokenServices.persistRefreshToken(user);
 
+      // genrate trefresh token
       const refreshToken = this.tokenServices.generateRefreshToken({
         ...payload,
         id: String(newRefreshToken.id),
       });
-
+      // set cookies
       res.cookie("accessToken", accessToken, {
         domain: "localhost",
         sameSite: "strict",
         maxAge: 1000 * 60 * 60,
         httpOnly: true,
       });
-
+      // set cookie
       res.cookie("refreshToken", refreshToken, {
         domain: "localhost",
         sameSite: "strict",
@@ -165,10 +177,12 @@ export class AuthController {
 
   async self(req: AuthRequest, res: Response) {
     console.log("Auth", req.auth);
+    // find user
     const user = await this.userService.findById(Number(req.auth.sub));
     res.json({ ...user, password: undefined });
   }
 
+  // genrate access token through refresh token
   async refresh(req: AuthRequest, res: Response, next: NextFunction) {
     console.log(req.auth);
 
@@ -178,8 +192,10 @@ export class AuthController {
         role: req.auth.role,
       };
 
+      // genrate access token
       const accessToken = this.tokenServices.generateAccessToken(payload);
 
+      // find user by id
       const user = await this.userService.findById(Number(req.auth.sub));
 
       if (!user) {
@@ -225,6 +241,7 @@ export class AuthController {
     }
   }
 
+  //logout
   async logout(req: AuthRequest, res: Response, next: NextFunction) {
     try {
       await this.tokenServices.deleteRefreshToken(Number(req.auth.id));

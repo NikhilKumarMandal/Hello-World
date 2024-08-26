@@ -8,7 +8,7 @@ import { AppDataSource } from "../../src/config/data-source";
 import { Roles } from "../../src/constant";
 import createJWKSMock from "mock-jwks";
 
-describe("POST /api/v1/auth/self", () => {
+describe("GET /api/v1/auth/self", () => {
   let connection: DataSource;
   let jwks: ReturnType<typeof createJWKSMock>;
 
