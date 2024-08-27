@@ -34,7 +34,7 @@ export class AuthController {
       lastName,
       email,
       password: "*******",
-      role: Roles.ADMIN,
+      role: Roles.CUSTOMER,
     });
 
     try {
@@ -44,7 +44,7 @@ export class AuthController {
         lastName,
         email,
         password,
-        role: Roles.ADMIN,
+        role: Roles.CUSTOMER,
       });
 
       this.logger.info("User has been registered", { id: user.id });
@@ -112,7 +112,7 @@ export class AuthController {
 
     try {
       // check email is correct or not
-      const user = await this.userService.findByEmail(email);
+      const user = await this.userService.findByEmailWithPassword(email);
 
       // check user exists or not
       if (!user) {

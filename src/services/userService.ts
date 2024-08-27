@@ -7,7 +7,14 @@ import bcrypt from "bcrypt";
 export class UserService {
   constructor(private userRepository: Repository<User>) {}
 
-  async create({ firstName, lastName, email, password, role }: UserData) {
+  async create({
+    firstName,
+    lastName,
+    email,
+    password,
+    role,
+    tenantId,
+  }: UserData) {
     // check user is already exists or not
 
     const user = await this.userRepository.findOne({ where: { email: email } });
@@ -27,12 +34,22 @@ export class UserService {
         email,
         password: hasdPassword,
         role,
+        tenant: tenantId ? { id: tenantId } : undefined,
       });
     } catch (error) {
       console.error("Database error:", error);
       const err = createHttpError(500, "Failed to store the data in database");
       throw err;
     }
+  }
+
+  async findByEmailWithPassword(email: string) {
+    return await this.userRepository.findOne({
+      where: {
+        email,
+      },
+      select: ["id", "firstName", "lastName", "email", "role", "password"],
+    });
   }
 
   async findByEmail(email: string) {

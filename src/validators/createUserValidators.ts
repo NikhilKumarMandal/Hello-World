@@ -16,4 +16,24 @@ export default checkSchema({
     errorMessage: "LastName is requried!",
     notEmpty: true,
   },
+  role: {
+    trim: true,
+    errorMessage: "Role is requried!",
+    notEmpty: true,
+  },
+  password: {
+    trim: true,
+    notEmpty: true,
+    isLength: {
+      options: {
+        min: 8,
+      },
+      errorMessage: "Password should be at least 8 chars",
+    },
+  },
+  tenantId: {
+    trim: true,
+    notEmpty: true,
+    errorMessage: "Tenant Is is requried!",
+  },
 });
