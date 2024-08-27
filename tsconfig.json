@@ -118,7 +118,7 @@
     "node_modules",
     "**/*.spec.ts",
     // , "**/*.mjs", "**/*.js",
-    "src/tests"
+    "tests"
   ]
   // "exclude": ["app.spec.ts"]
 }
