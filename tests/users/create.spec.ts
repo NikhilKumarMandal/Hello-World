@@ -6,8 +6,10 @@ import { AppDataSource } from "../../src/config/data-source";
 import app from "../../src/app";
 import { Roles } from "../../src/constant/index";
 import { User } from "../../src/entity/User";
+import { createTenant } from "../utils";
+import { Tenant } from "../../src/entity/Tenant";
 
-describe("POST /api/v1/users/", () => {
+describe("POST /api/v1/users", () => {
   let connection: DataSource;
   let jwks: ReturnType<typeof createJWKSMock>;
 
@@ -32,6 +34,7 @@ describe("POST /api/v1/users/", () => {
 
   describe("Given all fields", () => {
     it("should persist the user in the database", async () => {
+      const tenant = await createTenant(connection.getRepository(Tenant));
       const adminToken = jwks.token({
         sub: "1",
         role: Roles.ADMIN,
@@ -39,11 +42,11 @@ describe("POST /api/v1/users/", () => {
 
       // Register user
       const userData = {
-        firstName: "Rakesh",
-        lastName: "K",
-        email: "rakesh@mern.space",
+        firstName: "hello",
+        lastName: "world",
+        email: "hello@mern.space",
         password: "password",
-        tenantId: 1,
+        tenantId: tenant.id,
         role: Roles.MANAGER,
       };
 
@@ -61,26 +64,29 @@ describe("POST /api/v1/users/", () => {
     });
 
     it("should create a manager user", async () => {
+      const tenant = await createTenant(connection.getRepository(Tenant)); // Dynamically create tenant
+
       const adminToken = jwks.token({
         sub: "1",
         role: Roles.ADMIN,
       });
 
-      // Register user
+      // Register user with a role
       const userData = {
-        firstName: "Rakesh",
-        lastName: "K",
-        email: "rakesh@mern.space",
+        firstName: "hello",
+        lastName: "world",
+        email: "hello@mern.space",
         password: "password",
-        tenantId: 1,
+        tenantId: tenant.id,
         role: Roles.MANAGER,
       };
 
-      // Add token to cookie
+      // Add token to cookie and make request
       await request(app)
-        .post("/api/v1/users/")
+        .post("/api/v1/users/") // Correct endpoint
         .set("Cookie", [`accessToken=${adminToken}`])
         .send(userData);
+
       const userRepository = connection.getRepository(User);
       const users = await userRepository.find();
 
