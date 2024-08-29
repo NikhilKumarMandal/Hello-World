@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 export class CredentialService {
   // comapre password
   async comparePassword(password: string, hasedPassword: string) {

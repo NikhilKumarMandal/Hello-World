@@ -1,5 +1,3 @@
-import { RefreshToken } from "../../src/entity/RefreshToken";
-import { isJwt } from "../utils/index";
 import request from "supertest";
 import app from "../../src/app";
 import { User } from "../../src/entity/User";

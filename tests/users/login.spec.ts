@@ -1,4 +1,3 @@
-import { RefreshToken } from "../../src/entity/RefreshToken";
 import { isJwt } from "../utils/index";
 import request from "supertest";
 import app from "../../src/app";
@@ -6,7 +5,7 @@ import { User } from "../../src/entity/User";
 import { DataSource } from "typeorm";
 import { AppDataSource } from "../../src/config/data-source";
 import { Roles } from "../../src/constant";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 describe("POST /api/v1/auth/login", () => {
   let connection: DataSource;
