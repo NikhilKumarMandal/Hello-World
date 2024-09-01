@@ -135,7 +135,6 @@ describe("POST /api/v1/auth/register", () => {
       // Assert
       const userRepository = connection.getRepository(User);
       const users = await userRepository.find({ select: ["password"] });
-      console.log(users[0].password);
 
       expect(users[0].password).not.toBe(userData.password);
       expect(users[0].password).toHaveLength(60);
@@ -356,7 +355,7 @@ describe("POST /api/v1/auth/register", () => {
         .send(userData);
 
       // Assert
-      console.log(response.body);
+
       expect(response.statusCode).toBe(400);
       const userRepository = connection.getRepository(User);
       const user = await userRepository.find();
